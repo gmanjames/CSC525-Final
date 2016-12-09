@@ -29,16 +29,15 @@ const int WINDOW_WIDTH = 600;
 const int WINDOW_HEIGHT = 600;
 const int WINDOW_DEPTH = 600; // for viewable cube
 
-const int TILE_SIZE = 50; // leave as an integer that evenly divides window width and depth
+const int TILE_SIZE = 10; // leave as an integer that evenly divides window width and depth
 
-const float RED[] = { 1, 0, 0 }, BLUE[] = { 0, 0, 1 }, GREEN[] = { 0, 1, 0 };
+const float DARK_BLUE[] = { 131.0f / 255.0f, 157.0f / 255.0f, 183.0f / 255.0f };
+const float LIGHT_BLUE[] = { 183.0f / 255.0f, 201.0f / 255.0f, 217.0f / 255.0f };
 
 int lastX; // for keeping track of mouse position
 
 int mainWindow;
 
-
-// Drawing Functions
 
 void drawLines()
 {
@@ -64,11 +63,12 @@ void drawLines()
 	glEnd();
 }
 
+
 void drawTile(int x, int z, const float color[3])
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glColor3fv(color);
-
+	
 	glBegin(GL_POLYGON);
 	glVertex4i(x, 0, z, 1);
 	glVertex4i(x + TILE_SIZE, 0, z, 1);
@@ -79,16 +79,16 @@ void drawTile(int x, int z, const float color[3])
 
 void drawFloor()
 {
-	bool isRed = false;
+	bool isLight = false;
 	for (int z = WINDOW_DEPTH / 2; z >= -WINDOW_DEPTH / 2; z--) {
 		if (z % TILE_SIZE == 0) {
 			for (int x = -WINDOW_WIDTH / 2; x <= WINDOW_WIDTH / 2; x++) {
 				if (x % TILE_SIZE == 0) {
-					if (isRed)
-						drawTile(x, z, RED);
+					if (isLight)
+						drawTile(x, z, LIGHT_BLUE);
 					else
-						drawTile(x, z, BLUE);
-					isRed = !isRed;
+						drawTile(x, z, DARK_BLUE);
+					isLight = !isLight;
 				}
 			}
 		}
@@ -100,11 +100,12 @@ void drawFloor()
 
 void displayCallback()
 {
-	glMatrixMode(GL_MODELVIEW);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
 	drawLines();
-	glutWireCube(10.0);
+	glutWireCube(5.0);
 	drawFloor();
+	drawObject();
 	glFlush();
 }
 
@@ -117,18 +118,15 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 
 	glMatrixMode(GL_MODELVIEW);
-	gluLookAt(0.0, 300.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0);
+	gluLookAt(50.0, 50.0, 50.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glFrustum(-55.0, 55.0, -55.0, 55.0, 10.0, 1000.0);
+	glFrustum(-5.0, 5.0, -5.0, 5.0, 10.0, 1000.0);
 }
 
-void reset() {
-  glLoadIdentity();
-  init();
-  displayCallback();
-}
+
+// Menu if needed
 
 void topMenuCallback(int entryId)
 {
@@ -156,11 +154,6 @@ void motionCallback(int x, int y)
   displayCallback();
 }
 
-void controlMotionCallback(int x, int y)
-{
-    std::cout << x << ", " << y << "\n";
-}
-
 
 int main(int argc, char ** argv)
 {
@@ -174,7 +167,6 @@ int main(int argc, char ** argv)
 	init();
 
   int mainMenu = glutCreateMenu(topMenuCallback);
-  glutAddMenuEntry("RESET", 2);
   glutAddMenuEntry("EXIT", 3);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
 
