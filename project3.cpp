@@ -106,6 +106,121 @@ void displayCallback()
 	glutWireCube(10.0);
 	drawFloor();
 	glFlush();
+
+	void display3dObject()
+	{
+		glEnable(GL_DEPTH_TEST);
+		glFrontFace(GL_CCW);
+		glPolygonMode(GL_FRONT, GL_FILL); // solid
+
+		/*BODY*/
+		glPolygonMode(GL_BACK, GL_FILL);
+		glLineWidth(1);
+		glBegin(GL_POLYGON);
+		glColor3f(0, 1, 0);	// green
+		glVertex3i(-15, 45, 15); // v0 X Y Z
+		glVertex3i(-15, 45, -15); // v1
+		glVertex3i(15, 45, -15); // v2
+		glVertex3i(15, 45, 15); // v3
+		glEnd();
+
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 0, 1);	// blue
+		glVertex3i(-15, 80, 15); // v0 X Y Z
+		glVertex3i(-15, 80, -15); // v1
+		glVertex3i(15, 80, -15); // v2
+		glVertex3i(15, 80, 15); // v3
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glColor3f(1, 0.5, 0);	// RED
+		glVertex3i(-15, 45, 15); // v0 X Y Z
+		glVertex3i(-15, 80, 15); // v1
+		glVertex3i(15, 80, 15); // v2
+		glVertex3i(15, 45, 15); // v3
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glColor3f(1, 0, 0.5);	// RED
+		glVertex3i(15, 80, 15); // v0 X Y Z
+		glVertex3i(15, 80, -15); // v1
+		glVertex3i(15, 45, -15); // v2
+		glVertex3i(15, 45, 15); // v3
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glColor3f(1, 0.35, 0);	// RED
+		glVertex3i(-15, 80, 15); // v0 X Y Z
+		glVertex3i(-15, 80, -15); // v1
+		glVertex3i(-15, 45, -15); // v2
+		glVertex3i(-15, 45, 15); // v3
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glColor3f(1, 0, 0.35);	// RED
+		glVertex3i(-15, 80, -15); // v0 X Y Z
+		glVertex3i(15, 80, -15); // v1
+		glVertex3i(15, 45, -15); // v2
+		glVertex3i(-15, 45, -15); // v3
+		glEnd();
+
+		//***********************************************************************
+
+		/*HEAD*/
+		glBegin(GL_POLYGON);
+		glColor3f(0, 0, 0);	// blue
+		glVertex3i(-10, 80, 10); // v0 X Y Z
+		glVertex3i(10, 80, 10); // v1
+		glVertex3i(10, 80, -10); // v2
+		glVertex3i(-10, 80, -10); // v3
+		glEnd();
+
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 0, 0);	// blue
+		glVertex3i(-10, 100, 10); // v0 X Y Z
+		glVertex3i(10, 100, 10); // v1
+		glVertex3i(10, 100, -10); // v2
+		glVertex3i(-10, 100, -10); // v3
+		glEnd();
+
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 0, 0);	// blue
+		glVertex3i(-10, 80, 10); // v0 X Y Z
+		glVertex3i(-10, 100, 10); // v1
+		glVertex3i(10, 100, 10); // v2
+		glVertex3i(10, 80, 10); // v3
+		glEnd();
+
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 0, 0);	// blue
+		glVertex3i(10, 100, 10); // v0 X Y Z
+		glVertex3i(10, 100, -10); // v1
+		glVertex3i(10, 80, -10); // v2
+		glVertex3i(10, 80, 10); // v3
+		glEnd();
+
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 0, 0);	// blue
+		glVertex3i(10, 100, -10); // v0 X Y Z
+		glVertex3i(-10, 100, -10); // v1
+		glVertex3i(-10, 80, -10); // v2
+		glVertex3i(10, 80, -10); // v3
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 0, 0);	// blue
+		glVertex3i(-10, 100, 10); // v0 X Y Z
+		glVertex3i(-10, 100, -10); // v1
+		glVertex3i(-10, 80, -10); // v2
+		glVertex3i(-10, 80, 10); // v3
+		glEnd();
+
+
 }
 
 
