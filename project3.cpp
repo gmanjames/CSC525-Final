@@ -267,6 +267,59 @@ void displayCallback()
 		glEnd();
 
 
+		//*****************
+		/*arms*/
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 1, 0);
+		glVertex3i(-25, 75, 7.5);
+		glVertex3i(-25, 50, 7.5);
+		glVertex3i(25, 50, 7.5);
+		glVertex3i(25, 75, 7.5);
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 1, 0);
+		glVertex3i(-25, 75, -7.5);
+		glVertex3i(25, 75, -7.5);
+		glVertex3i(25, 75, 7.5);
+		glVertex3i(-25, 75, 7.5);
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 1, 0);
+		glVertex3i(-25, 50, 7.5);
+		glVertex3i(25, 50, 7.5);
+		glVertex3i(25, 50, -7.5);
+		glVertex3i(-25, 50, -7.5);
+		glEnd();
+
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 1, 0);
+		glVertex3i(-25, 75, -7.5);
+		glVertex3i(25, 75, -7.5);
+		glVertex3i(25, 50, -7.5);
+		glVertex3i(-25, 50, -7.5);
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 1, 0);
+		glVertex3i(-25, 75, -7.5);
+		glVertex3i(-25, 75, 7.5);
+		glVertex3i(-25, 50, 7.5);
+		glVertex3i(-25, 50, -7.5);
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glColor3f(0, 1, 0);
+		glVertex3i(25, 50, 7.5);
+		glVertex3i(25, 50, -7.5);
+		glVertex3i(25, 75, -7.5);
+		glVertex3i(25, 75, 7.5);
+		glEnd();
+
+
 }
 
 
