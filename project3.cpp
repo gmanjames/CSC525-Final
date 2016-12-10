@@ -39,6 +39,114 @@ int lastX; // for keeping track of mouse position
 int mainWindow;
 
 
+void polygon(int v1[], int v2[], int v3[], int v4[], int xOffset, int zOffset)
+{
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+	glBegin(GL_POLYGON);
+
+	int v1XOffset = v1[0] + xOffset;
+	int v1ZOffset = v1[2] + zOffset;
+
+	int v2XOffset = v2[0] + xOffset;
+	int v2ZOffset = v2[2] + zOffset;
+
+	int v3XOffset = v3[0] + xOffset;
+	int v3ZOffset = v3[2] + zOffset;
+
+	int v4XOffset = v4[0] + xOffset;
+	int v4ZOffset = v4[2] + zOffset;
+
+
+	glVertex4i(v1XOffset, v1[1], v1ZOffset, v1[3]);
+	glVertex4i(v2XOffset, v2[1], v2ZOffset, v1[3]);
+	glVertex4i(v3XOffset, v3[1], v3ZOffset, v1[3]);
+	glVertex4i(v4XOffset, v4[1], v4ZOffset, v1[3]);
+	glEnd();
+}
+
+void drawHat(int xOffset, int zOffset)
+{
+	int hatVerts[][4] = {
+		-20, 107, 20, 1, 20, 107, 20, 1, 20, 101, -20, 1, -20, 101, -20, 1
+	};
+
+	glColor3f(0, 0, 0);
+	polygon(hatVerts[0], hatVerts[1], hatVerts[2], hatVerts[3], xOffset, zOffset);
+
+	glColor3f(1, 0.75, 0);
+	glLineWidth(3);
+	glBegin(GL_LINES);
+	glVertex4i(xOffset, 105, zOffset, 1);
+	glVertex4i(xOffset, 100, zOffset - 30, 1);
+	glEnd();
+}
+
+void drawHead(int xOffset, int zOffset)
+{
+	int headVerts[][4] = {
+		-10, 80, 10, 1, 10, 80, 10, 1, 10, 80, -10, 1, -10, 80, -10, 1,
+		-10, 100, 10, 1, 10, 100, 10, 1, 10, 100, -10, 1, -10, 100, -10, 1
+	};
+
+	glColor3f(0, 1, 0);
+	polygon(headVerts[0], headVerts[1], headVerts[2], headVerts[3], xOffset, zOffset);
+	polygon(headVerts[4], headVerts[5], headVerts[6], headVerts[7], xOffset, zOffset);
+	polygon(headVerts[0], headVerts[4], headVerts[5], headVerts[1], xOffset, zOffset);
+	polygon(headVerts[5], headVerts[6], headVerts[2], headVerts[1], xOffset, zOffset);
+	polygon(headVerts[6], headVerts[7], headVerts[3], headVerts[2], xOffset, zOffset);
+	polygon(headVerts[4], headVerts[7], headVerts[3], headVerts[0], xOffset, zOffset);
+}
+
+void drawBody(int xOffset, int zOffset)
+{
+	int bodyVerts[][4] = {
+		-15, 45, 15, 1,    -15, 45, -15, 1,    15, 45, -15, 1,    15, 45, 15, 1,
+		-15, 80, 15, 1,    -15, 80, -15, 1,    15, 80, -15, 1,    15, 80, 15, 1
+	};
+
+	glColor3f(1, 0, 0);
+	polygon(bodyVerts[0], bodyVerts[1], bodyVerts[2], bodyVerts[3], xOffset, zOffset);
+	polygon(bodyVerts[4], bodyVerts[5], bodyVerts[6], bodyVerts[7], xOffset, zOffset);
+	polygon(bodyVerts[0], bodyVerts[4], bodyVerts[5], bodyVerts[1], xOffset, zOffset);
+	polygon(bodyVerts[5], bodyVerts[6], bodyVerts[2], bodyVerts[1], xOffset, zOffset);
+	polygon(bodyVerts[6], bodyVerts[7], bodyVerts[3], bodyVerts[2], xOffset, zOffset);
+}
+
+void drawLegs(int xOffset, int zOffset)
+{}
+
+void drawArms(int xOffset, int zOffset)
+{}
+
+void drawPerson(int xOffset, int zOffset)
+{
+	drawHat(xOffset, zOffset);
+	drawHead(xOffset, zOffset);
+	drawBody(xOffset, zOffset);
+	drawLegs(xOffset, zOffset);
+	drawArms(xOffset, zOffset);
+}
+
+void drawPeople()
+{
+	int shiftX = 0;
+	int shiftZ = 0;
+
+	for (int i = 0; i < 9; i++)
+	{
+		if (i % 3 == 0)
+		{
+			shiftX = 0;
+			shiftZ -= 60;
+		}
+		
+		drawPerson(shiftX, shiftZ);
+
+		shiftX -= 100;
+	}
+}
+
 void drawLines()
 {
 	//draw coordinate axis labels
@@ -105,7 +213,7 @@ void displayCallback()
 	drawLines();
 	glutWireCube(5.0);
 	drawFloor();
-	drawObject();
+	drawPeople();
 	glFlush();
 }
 
@@ -118,11 +226,11 @@ void init()
 	glEnable(GL_DEPTH_TEST);
 
 	glMatrixMode(GL_MODELVIEW);
-	gluLookAt(50.0, 50.0, 50.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	gluLookAt(200.0, 200.0, 200.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glFrustum(-5.0, 5.0, -5.0, 5.0, 10.0, 1000.0);
+	glFrustum(-5.0, 5.0, -5.0, 5.0, 10.0, 1150.0);
 }
 
 
