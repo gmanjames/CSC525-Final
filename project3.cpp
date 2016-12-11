@@ -3,7 +3,7 @@ PROGRAMMERS: Jamie Johnson, Matthew Wilson and Garren Ijames
 TRACE FOLDERS: Jamie029, Wilson10101, Ijames160
 COURSE: CSC 525/625
 MODIFIED BY:	Jamie Johnson, Matthew Wilson and Garren Ijames
-LAST MODIFIED DATE: 12/9/2016
+LAST MODIFIED DATE: 12/11/2016
 CONTRIBUTIONS:
 	Matt   - 33.3%
 		-Lighting
@@ -15,6 +15,9 @@ CONTRIBUTIONS:
 		-Floor
 	Jamie  - 33.3%
 		-Object shape definitions
+		-Object Placement
+		-Final Artistic Review
+
 
 
 DESCRIPTION: Project 3 - 3D Event/Advertisement
@@ -24,6 +27,7 @@ NOTE: This 3D scene of a graduation includes all of the listed requirements to t
 			Interactive view through graphics window
 		And Additionally:
 			Simple Scene/object Lighting
+      Information window and basic menus
 
 FILES:Project3.cpp
 
@@ -39,7 +43,7 @@ INSTRUCTION FOR COMPILATION AND EXECUTION:
 #include <cmath>
 
 
-//from initial position, pos Z = front, pos X = right
+//from initial position, pos Z = front, pos X = right, hat for the top of graduate hats
 enum ShapeFace {_Bottom, _Top, _Left, _Right, _Front, _Back, _Hat};
 
 const int WINDOW_WIDTH = 600;
@@ -53,36 +57,35 @@ const float LIGHT_BLUE[] = { 183.0f / 255.0f, 201.0f / 255.0f, 217.0f / 255.0f }
 
 int lastX; // for keeping track of mouse position
 
-
 int infoWindowId;
 int mainWindowId;
-
 
 GLfloat light_diffuse[] = { 1, 1, 1, 1 }; //Light color: bright white light
 GLfloat light_position[] = { 10, 300, -50.0, 1 };  // Light location, set as a point light above the scene
 
-
-void polygon(int v1[], int v2[], int v3[], int v4[], int xOffset, int zOffset, int face)
+//Draws a polygon side based on 4 passed vertices, x and z placement offsets and rendered side
+void polygon(float v1[], float v2[], float v3[], float v4[], float xOffset, float zOffset, int face)
 {
 	glPolygonMode(GL_FRONT, GL_FILL);
 	glPolygonMode(GL_BACK, GL_FILL);
-	
-	int v1XOffset = v1[0] + xOffset;
-	int v1ZOffset = v1[2] + zOffset;
 
-	int v2XOffset = v2[0] + xOffset;
-	int v2ZOffset = v2[2] + zOffset;
+	float v1XOffset = v1[0] + xOffset;
+	float v1ZOffset = v1[2] + zOffset;
 
-	int v3XOffset = v3[0] + xOffset;
-	int v3ZOffset = v3[2] + zOffset;
+	float v2XOffset = v2[0] + xOffset;
+	float v2ZOffset = v2[2] + zOffset;
 
-	int v4XOffset = v4[0] + xOffset;
-	int v4ZOffset = v4[2] + zOffset;
+	float v3XOffset = v3[0] + xOffset;
+	float v3ZOffset = v3[2] + zOffset;
+
+	float v4XOffset = v4[0] + xOffset;
+	float v4ZOffset = v4[2] + zOffset;
 
 
-	
+
 	glBegin(GL_POLYGON);
 
+  //determine surface normal vector for lighting
 	switch (face){
 		case 0: glNormal3f(0, 0, -1);
 			break;
@@ -100,16 +103,17 @@ void polygon(int v1[], int v2[], int v3[], int v4[], int xOffset, int zOffset, i
 			break;
 	}
 
-	glVertex4i(v1XOffset, v1[1], v1ZOffset, v1[3]);
-	glVertex4i(v2XOffset, v2[1], v2ZOffset, v1[3]);
-	glVertex4i(v3XOffset, v3[1], v3ZOffset, v1[3]);
-	glVertex4i(v4XOffset, v4[1], v4ZOffset, v1[3]);
+	glVertex4f(v1XOffset, v1[1], v1ZOffset, v1[3]);
+	glVertex4f(v2XOffset, v2[1], v2ZOffset, v1[3]);
+	glVertex4f(v3XOffset, v3[1], v3ZOffset, v1[3]);
+	glVertex4f(v4XOffset, v4[1], v4ZOffset, v1[3]);
 	glEnd();
 }
 
+//Draw hat of an individual with polygons
 void drawHat(int xOffset, int zOffset)
 {
-	int hatVerts[][4] = {
+	float hatVerts[][4] = {
 		-20, 107, 20, 1, 20, 107, 20, 1, 20, 101, -20, 1, -20, 101, -20, 1
 	};
 
@@ -127,9 +131,10 @@ void drawHat(int xOffset, int zOffset)
 	glEnd();
 }
 
+//Draw head of an individual with polygons
 void drawHead(int xOffset, int zOffset)
 {
-	int headVerts[][4] = {
+	float headVerts[][4] = {
 		-10, 80, 10, 1, -10, 80, -10, 1, 10, 80, -10, 1, 10, 80, 10, 1,
 		-10, 100, 10, 1, -10, 100, -10, 1, 10, 100, -10, 1, 10, 100, 10, 1
 	};
@@ -144,9 +149,10 @@ void drawHead(int xOffset, int zOffset)
 	polygon(headVerts[4], headVerts[7], headVerts[3], headVerts[0], xOffset, zOffset, _Front);
 }
 
+//Draw body of an individual with polygons
 void drawBody(int xOffset, int zOffset)
 {
-	int bodyVerts[][4] = {
+	float bodyVerts[][4] = {
 		-15, 45, 15, 1, -15, 45, -15, 1, 15, 45, -15, 1, 15, 45, 15, 1,
 		-15, 80, 15, 1, -15, 80, -15, 1, 15, 80, -15, 1, 15, 80, 15, 1
 	};
@@ -161,10 +167,11 @@ void drawBody(int xOffset, int zOffset)
 	polygon(bodyVerts[4], bodyVerts[7], bodyVerts[3], bodyVerts[0], xOffset, zOffset, _Front);
 }
 
+//Draw legs of an individual with polygons
 void drawLegs(int xOffset, int zOffset)
 {
 
-	int legVerts[][4] = {
+	float legVerts[][4] = {
 		-12.5, 0, 12.5, 1, -12.5, 0, -12.5, 1, 12.5, 0, -12.5, 1, 12.5, 0, 12.5, 1,
 		-12.5, 45, 12.5, 1, -12.5, 45, -12.5, 1, 12.5, 45, -12.5, 1, 12.5, 45, 12.5, 1
 	};
@@ -179,14 +186,15 @@ void drawLegs(int xOffset, int zOffset)
 	polygon(legVerts[4], legVerts[7], legVerts[3], legVerts[0], xOffset, zOffset, _Front);
 }
 
+//Draw arms of an individual with polygons
 void drawArms(int xOffset, int zOffset)
 {
-	int armVerts[][4] = {
+	float armVerts[][4] = {
 		-25, 50, 7.5, 1, -25, 50, -7.5, 1, 25, 50, -7.5, 1, 25, 50, 7.5, 1,
 		-25, 75, 7.5, 1, -25, 75, -7.5, 1, 25, 75, -7.5, 1, 25, 75, 7.5, 1,
 	};
 
-	int handVerts[][4] = {
+	float handVerts[][4] = {
 		-25, 45, 7.5, 1, -25, 45, -7.5, 1, 25, 45, -7.5, 1, 25, 45, 7.5, 1,
 		-25, 50, 7.5, 1, -25, 50, -7.5, 1, 25, 50, -7.5, 1, 25, 50, 7.5, 1,
 	};
@@ -210,6 +218,7 @@ void drawArms(int xOffset, int zOffset)
 	polygon(handVerts[4], handVerts[7], handVerts[3], handVerts[0], xOffset, zOffset, _Front);
 }
 
+//Draws an individual person
 void drawPerson(int xOffset, int zOffset)
 {
 	drawHat(xOffset, zOffset);
@@ -219,16 +228,17 @@ void drawPerson(int xOffset, int zOffset)
 	drawArms(xOffset, zOffset);
 }
 
+//Draws a crowd of people
 void drawPeople()
 {
-	int shiftX = 0;
+	int shiftX = 200;
 	int shiftZ = 0;
 
-	for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 15; i++)
 	{
-		if (i % 3 == 0)
+		if (i % 5 == 0)
 		{
-			shiftX = 0;
+			shiftX = 200;
 			shiftZ -= 60;
 		}
 
@@ -238,10 +248,11 @@ void drawPeople()
 	}
 }
 
-//Remove for final
+//Axes for testing
 void drawLines()
 {
 	//draw coordinate axis labels
+	glLineWidth(1);
 	glColor3f(0, 0, 0);
 	glRasterPos3i(155, 4, 0);
 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, 'X'); //x axis
@@ -271,7 +282,7 @@ void drawTile(int x, int z, const float color[3]) {
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, color); //set tile material and color for lighting
 	glBegin(GL_POLYGON);
 		glNormal3f(0, 1, 0); //set normal vector for lighting
-		glVertex4i(x, 0, z, 1); 
+		glVertex4i(x, 0, z, 1);
 		glVertex4i(x + TILE_SIZE, 0, z, 1);
 		glVertex4i(x + TILE_SIZE, 0, z + TILE_SIZE, 1);
 		glVertex4i(x, 0, z + TILE_SIZE, 1);
@@ -280,7 +291,7 @@ void drawTile(int x, int z, const float color[3]) {
 
 //Draws the floor made of individual tiles alternating in color
 void drawFloor() {
-	bool isLight = false; 
+	bool isLight = false;
 	for (int z = WINDOW_DEPTH ; z >= -WINDOW_DEPTH; z--) {
 		if (z % TILE_SIZE == 0) {
 			for (int x = -WINDOW_WIDTH ; x <= WINDOW_WIDTH ; x++) {
@@ -295,7 +306,7 @@ void drawFloor() {
 		}
 	}
 }
-
+//Banner functions
 void drawBanner()
 {
 	float color[] = { .7, 0, 0, 0 };
@@ -305,17 +316,76 @@ void drawBanner()
 	glNormal3f(0, 0, -1);
 	glVertex3f(-100, 120, 210);
 	glVertex3f(100, 120, 210);
-	glVertex3f(100, 80, 210);
-	glVertex3f(-100, 80, 210);
+	glVertex3f(100, 30, 210);
+	glVertex3f(-100, 30, 210);
 	glNormal3f(0, 0, 1);
-	glVertex3f(-100, 80, 211);
-	glVertex3f(100, 80, 211);
+	glVertex3f(-100, 30, 211);
+	glVertex3f(100, 30, 211);
 	glVertex3f(100, 120, 211);
 	glVertex3f(-100, 120, 211);
 	glEnd();
-
 }
 
+void drawBannerSyms()
+{
+	glBegin(GL_POLYGON);
+	glVertex4f(30, 115, 209, 1);
+	glVertex4f(2, 95, 209, 1);
+	glVertex4f(30, 75, 209, 1);
+	glVertex4f(62, 95, 209, 1);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex4f(30, 70, 209, 1);
+	glVertex4f(15, 80, 209, 1);
+	glVertex4f(15, 55, 209, 1);
+	glVertex4f(30, 45, 209, 1);
+	glEnd();
+
+	glBegin(GL_POLYGON);
+	glVertex4f(30, 70, 209, 1);
+	glVertex4f(45, 80, 209, 1);
+	glVertex4f(45, 55, 209, 1);
+	glVertex4f(30, 45, 209, 1);
+	glEnd();
+
+	glLineWidth(3);
+	glBegin(GL_LINES);
+	glVertex4f(10, 95, 209, 1);
+	glVertex4f(10, 45, 209, 1);
+	glEnd();
+
+	glLineWidth(10);
+	glBegin(GL_LINES);
+	glVertex4f(-10, 105, 209, 1);
+	glVertex4f(-10, 60, 209,  1);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex4f(-10, 55, 209, 1);
+	glVertex4f(-10, 45, 209, 1);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex4f(-30, 105, 209, 1);
+	glVertex4f(-30, 60, 209,  1);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex4f(-30, 55, 209, 1);
+	glVertex4f(-30, 45, 209, 1);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex4f(-50, 105, 209, 1);
+	glVertex4f(-50, 60, 209,  1);
+	glEnd();
+
+	glBegin(GL_LINES);
+	glVertex4f(-50, 55, 209, 1);
+	glVertex4f(-50, 45, 209, 1);
+	glEnd();
+}
 //Display Callbacks
 
 //Primary Display callback
@@ -323,11 +393,12 @@ void displayCallback()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
-	drawLines(); //remove for final
-	glutWireCube(50.0); //remove for final
+	//drawLines(); //removed for final
+	//glutWireCube(50.0); //removed for final
 	drawFloor();
 	drawPeople();
 	drawBanner();
+	drawBannerSyms();
 	glFlush();
 }
 
@@ -360,6 +431,8 @@ void init()
 
 void topMenuCallback(int entryId)
 {
+	if (entryId == 3)
+		exit(0);
 }
 
 
@@ -395,12 +468,18 @@ void infoInstructions() {
 	std::string myArray[] = {
 		"To circle around the scene:",
 		"Press the Left mouse button",
-		"and move the mouse left or right"
+		"and move the mouse left or right",
+    "",
+    "To Exit scene: Right click on the",
+    "3D scene window and choose Exit",
+    "",
+    "To hide Info: Right click on the",
+    "Info window and choose Close"
 	};
 
-	for (int i = 0; i < 3; i++) {					//for each line of info text
+	for (int i = 0; i < 9; i++) {					//for each line of info text
 		//set position to draw from
-		glRasterPos2i(-180, 100 - 45 * i);
+		glRasterPos2i(-180, 120 - 45 * i);
 		for (int j = 0; j < myArray[i].size(); j++) { //for each character in the string
 			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, myArray[i][j]);
 		}
@@ -434,10 +513,13 @@ void InfoInit(){
 
 
 //Main program function
-int main(int argc, char ** argv)
-{
+int main(int argc, char **argv){
+	//3d window
+	glutInit(& argc, argv);			// optional
+	glutInitDisplayMode(GLUT_DEPTH);	// optional
+
 	//info window
-	glutInitWindowSize(400, 300);
+	glutInitWindowSize(400, 320);
 	glutInitWindowPosition(925, 0);
 	infoWindowId = glutCreateWindow("Info");
 
@@ -449,13 +531,9 @@ int main(int argc, char ** argv)
 
 	glutDisplayFunc(infoDisplayCallback);
 
-	//3d window
-	glutInit(& argc, argv);			// optional
-	glutInitDisplayMode(GLUT_DEPTH);	// optional
-
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	glutInitWindowPosition(100, 0);
-	mainWindowId = glutCreateWindow("Display in 3D");
+	mainWindowId = glutCreateWindow("Thats All Folks: Final Project");
 
 	init();
 
