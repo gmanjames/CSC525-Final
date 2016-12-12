@@ -27,6 +27,7 @@ NOTE: This 3D scene of a graduation includes all of the listed requirements to t
 			Interactive view through graphics window
 		And Additionally:
 			Simple Scene/object Lighting
+      Information window and basic menus
 
 FILES:Project3.cpp
 
@@ -42,7 +43,7 @@ INSTRUCTION FOR COMPILATION AND EXECUTION:
 #include <cmath>
 
 
-//from initial position, pos Z = front, pos X = right
+//from initial position, pos Z = front, pos X = right, hat for the top of graduate hats
 enum ShapeFace {_Bottom, _Top, _Left, _Right, _Front, _Back, _Hat};
 
 const int WINDOW_WIDTH = 600;
@@ -56,15 +57,13 @@ const float LIGHT_BLUE[] = { 183.0f / 255.0f, 201.0f / 255.0f, 217.0f / 255.0f }
 
 int lastX; // for keeping track of mouse position
 
-
 int infoWindowId;
 int mainWindowId;
-
 
 GLfloat light_diffuse[] = { 1, 1, 1, 1 }; //Light color: bright white light
 GLfloat light_position[] = { 10, 300, -50.0, 1 };  // Light location, set as a point light above the scene
 
-
+//Draws a polygon side based on 4 passed vertices, x and z placement offsets and rendered side
 void polygon(float v1[], float v2[], float v3[], float v4[], float xOffset, float zOffset, int face)
 {
 	glPolygonMode(GL_FRONT, GL_FILL);
@@ -86,6 +85,7 @@ void polygon(float v1[], float v2[], float v3[], float v4[], float xOffset, floa
 
 	glBegin(GL_POLYGON);
 
+  //determine surface normal vector for lighting
 	switch (face){
 		case 0: glNormal3f(0, 0, -1);
 			break;
@@ -110,6 +110,7 @@ void polygon(float v1[], float v2[], float v3[], float v4[], float xOffset, floa
 	glEnd();
 }
 
+//Draw hat of an individual with polygons
 void drawHat(int xOffset, int zOffset)
 {
 	float hatVerts[][4] = {
@@ -130,6 +131,7 @@ void drawHat(int xOffset, int zOffset)
 	glEnd();
 }
 
+//Draw head of an individual with polygons
 void drawHead(int xOffset, int zOffset)
 {
 	float headVerts[][4] = {
@@ -147,6 +149,7 @@ void drawHead(int xOffset, int zOffset)
 	polygon(headVerts[4], headVerts[7], headVerts[3], headVerts[0], xOffset, zOffset, _Front);
 }
 
+//Draw body of an individual with polygons
 void drawBody(int xOffset, int zOffset)
 {
 	float bodyVerts[][4] = {
@@ -164,6 +167,7 @@ void drawBody(int xOffset, int zOffset)
 	polygon(bodyVerts[4], bodyVerts[7], bodyVerts[3], bodyVerts[0], xOffset, zOffset, _Front);
 }
 
+//Draw legs of an individual with polygons
 void drawLegs(int xOffset, int zOffset)
 {
 
@@ -182,6 +186,7 @@ void drawLegs(int xOffset, int zOffset)
 	polygon(legVerts[4], legVerts[7], legVerts[3], legVerts[0], xOffset, zOffset, _Front);
 }
 
+//Draw arms of an individual with polygons
 void drawArms(int xOffset, int zOffset)
 {
 	float armVerts[][4] = {
@@ -213,6 +218,7 @@ void drawArms(int xOffset, int zOffset)
 	polygon(handVerts[4], handVerts[7], handVerts[3], handVerts[0], xOffset, zOffset, _Front);
 }
 
+//Draws an individual person
 void drawPerson(int xOffset, int zOffset)
 {
 	drawHat(xOffset, zOffset);
@@ -222,6 +228,7 @@ void drawPerson(int xOffset, int zOffset)
 	drawArms(xOffset, zOffset);
 }
 
+//Draws a crowd of people
 void drawPeople()
 {
 	int shiftX = 200;
@@ -241,7 +248,7 @@ void drawPeople()
 	}
 }
 
-//Remove for final
+//Axes for testing
 void drawLines()
 {
 	//draw coordinate axis labels
@@ -299,7 +306,7 @@ void drawFloor() {
 		}
 	}
 }
-
+//Banner functions
 void drawBanner()
 {
 	float color[] = { .7, 0, 0, 0 };
@@ -386,8 +393,8 @@ void displayCallback()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
-	drawLines(); //remove for final
-	glutWireCube(50.0); //remove for final
+	//drawLines(); //removed for final
+	//glutWireCube(50.0); //removed for final
 	drawFloor();
 	drawPeople();
 	drawBanner();
@@ -461,12 +468,18 @@ void infoInstructions() {
 	std::string myArray[] = {
 		"To circle around the scene:",
 		"Press the Left mouse button",
-		"and move the mouse left or right"
+		"and move the mouse left or right",
+    "",
+    "To Exit scene: Right click on the",
+    "3D scene window and choose Exit",
+    "",
+    "To hide Info: Right click on the",
+    "Info window and choose Close"
 	};
 
-	for (int i = 0; i < 3; i++) {					//for each line of info text
+	for (int i = 0; i < 9; i++) {					//for each line of info text
 		//set position to draw from
-		glRasterPos2i(-180, 100 - 45 * i);
+		glRasterPos2i(-180, 120 - 45 * i);
 		for (int j = 0; j < myArray[i].size(); j++) { //for each character in the string
 			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, myArray[i][j]);
 		}
@@ -506,7 +519,7 @@ int main(int argc, char **argv){
 	glutInitDisplayMode(GLUT_DEPTH);	// optional
 
 	//info window
-	glutInitWindowSize(400, 300);
+	glutInitWindowSize(400, 320);
 	glutInitWindowPosition(925, 0);
 	infoWindowId = glutCreateWindow("Info");
 
@@ -517,7 +530,6 @@ int main(int argc, char **argv){
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
 	glutDisplayFunc(infoDisplayCallback);
-
 
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	glutInitWindowPosition(100, 0);
